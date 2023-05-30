@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<head>
+    <script src="functions.js"></script>
+</head>
+<body>
+    <h3 id="Hdraw">Draw</h3>
+    <div id="container">
+        <div id="drawOptions">
+            <label for="color" id="colorLabel">Color:</label>
+            <input type="color" id="color" name="color"><br>
+            <p>shape:</p>
+            <label for="line" class="rad">Line
+            <input type="radio" id="line" name="shape" value="line" checked>
+            <span class="radio"></span>
+            </label><br>
+            <label for="free" class="rad">Free Line
+            <input type="radio" id="free" name="shape" value="free">
+            <span class="radio"></span>
+            </label><br>
+            <label for="hrect" class="rad">Hollow Rectangle
+            <input type="radio" id="hrect" name="shape" value="hrect">
+            <span class="radio"></span>
+            </label><br>
+            <label for="frect" class="rad">Filled Rectangle
+            <input type="radio" id="frect" name="shape" value="frect">
+            <span class="radio"></span>
+            </label><br><br>
+            <label for="size">Size:  </label>
+            <input type="number" id="size" name="size" min="1" max="10" value="5">
+        </div>
+        <!-- <div id="can" onload="set()"> -->
+        <canvas id="draw" width="500" height="300" style="border: 1px black solid;"></canvas>
+        <!-- </div> -->
+        <div id="imageOptions">
+            <input type="button" id="clear" name="clear" value="clear">
+            <input type="button" id="save" name="save" value="save img">
+        </div>
+    </div>
+</body>

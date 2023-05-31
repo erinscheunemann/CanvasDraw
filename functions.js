@@ -1,4 +1,4 @@
-window.addEventListener("load", function(){
+window.addEventListener("load", function(){ // only works when page is fully loaded
     const canvasElem = document.getElementById("draw"); // gets canvas element
     const clear = document.getElementById("clear"); // clear button
     const save = document.getElementById("save"); // save button
@@ -18,11 +18,13 @@ window.addEventListener("load", function(){
     let icoord = {x: 0, y: 0}; // initial coordinate
     let ecoord = {x: 0, y: 0}; // end coordinate
     let flag = false; // needed so nothing is drawn with mouse move if the shape isnt free line
+    let flag2 = false; // needed so nothing is drawn with during/end if begin doesnt happen
 
 
     canvasElem.addEventListener("mousedown", begin); 
     canvasElem.addEventListener("mousemove", during); 
     canvasElem.addEventListener("mouseup", end);  // if mouse up occurs outside canvas this is never called
+    canvasElem.addEventListener("mouseleave", end); // but this is 
 
     clear.addEventListener("click", function(){
         grid.clearRect(0,0, canvasElem.width, canvasElem.height);
@@ -41,6 +43,8 @@ window.addEventListener("load", function(){
     });
 
     function begin(e) { // mousedown
+        flag2 = true;
+
         icoord.x  = e.clientX - canvasElem.offsetLeft; // sets initial coordinates
         icoord.y = e.clientY - canvasElem.offsetTop;
         
@@ -57,7 +61,7 @@ window.addEventListener("load", function(){
         let x  = e.clientX - canvasElem.offsetLeft; // gets currrent corrdinates
         let y = e.clientY - canvasElem.offsetTop;
 
-        if(flag){
+        if(flag && flag2){
             grid.lineTo(x, y); // small line from last coordinates to current coordinates (lines so small it will look squigly)
             grid.stroke();
         } 
@@ -75,32 +79,34 @@ window.addEventListener("load", function(){
         let width = -(icoord.x-ecoord.x); // width and height for rectangles
         let height = -(icoord.y-ecoord.y);
 
-        switch (shape) {
-            case 'line': // straight line drawn
-                grid.beginPath();
-                grid.moveTo(icoord.x, icoord.y);
-                grid.lineTo(ecoord.x, ecoord.y);
-                grid.stroke();
-                break;
-            case 'hrect': // hollow rectangle drawn
-                grid.strokeRect(icoord.x, icoord.y, width, height);
-                break;
-            case 'frect': // filled rectangle drawn
-                grid.beginPath();
-                grid.rect(icoord.x, icoord.y, width, height);
-                grid.fillStyle = rgb.value;
-                grid.fill();
-                grid.stroke();
-                break;
-            case 'free': // only needs stroke because beginpath and lineto are in begin and during
-                grid.lineTo(ecoord.x, ecoord.y);
-                grid.stroke();
-                flag = false;
-                break;
-            default: // technically dont need since one is always going to be checked but nice for troubleshooting
-                console.log("shape: "+shape+" was not found");
-                break;
+        if (flag2) {
+            switch (shape) {
+                case 'line': // straight line drawn
+                    grid.beginPath();
+                    grid.moveTo(icoord.x, icoord.y);
+                    grid.lineTo(ecoord.x, ecoord.y);
+                    grid.stroke();
+                    break;
+                case 'hrect': // hollow rectangle drawn
+                    grid.strokeRect(icoord.x, icoord.y, width, height);
+                    break;
+                case 'frect': // filled rectangle drawn
+                    grid.beginPath();
+                    grid.rect(icoord.x, icoord.y, width, height);
+                    grid.fillStyle = rgb.value;
+                    grid.fill();
+                    grid.stroke();
+                    break;
+                case 'free': // only needs stroke because beginpath and lineto are in begin and during
+                    grid.lineTo(ecoord.x, ecoord.y);
+                    grid.stroke();
+                    flag = false;
+                    break;
+                default: // technically dont need since one is always going to be checked but nice for troubleshooting
+                    console.log("shape: "+shape+" was not found");
+                    break;
+            }
         }
-
+        flag2 = false;
     }
 })

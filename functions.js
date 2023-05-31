@@ -11,7 +11,7 @@ window.addEventListener("load", function(){ // only works when page is fully loa
     grid.rect(0, 0, canvasElem.width, canvasElem.height);
     grid.strokeStyle = "white";
     grid.fillStyle = "white";
-    grid.fill();
+    grid.fill(); // test commit
     grid.stroke();
     grid.lineCap = 'round'; 
 

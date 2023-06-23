@@ -6,8 +6,8 @@ Added layer functionality to canvas.
 
 **NEW**:
 - User can add layers to canvas by clicking the add layer button.
-- User can pick which layer they want to draw on by clicking the radio button next to the disired layer.
-- User can hide and unhide layers by clicking the checkbox next to the disired layer.
+- User can pick which layer they want to draw on by clicking the radio button next to the desired layer.
+- User can hide and unhide layers by clicking the checkbox next to the desired layer.
 - Clear and Save Image buttons were moved to be on top of the drawing canvas rather than underneath it. (this is temporary)
 
 **BUGS** (or *less appreciated* features...):

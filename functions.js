@@ -5,6 +5,7 @@ window.addEventListener("load", function(){ // only works when page is fully loa
     const add = document.getElementById("addLayer"); // add layer button
     const rgb = document.getElementById("color"); // gets color for shapes
     const size = document.getElementById("size"); // gets size for shapes/lines
+    const eraser = document.getElementById("eraser"); // gets erasing status 
     const easel = this.document.getElementById("easel"); // div with canvases 
 
     let grid1 = canvasElem.getContext('2d'); // creates drawable canvas
@@ -79,15 +80,25 @@ window.addEventListener("load", function(){ // only works when page is fully loa
         newCanvas.addEventListener("mouseleave", end); // but this is 
     });
 
-    clear.addEventListener("click", function(){ // clears the layer that is selected
-        grid.clearRect(0,0, canvasElem.width, canvasElem.height);
+    clear.addEventListener("click", function(){ // clears all layers
+        for (i=1; i <= nextLayer; i++) {
+            let g = eval("grid"+i);
+            g.clearRect(0,0, canvasElem.width, canvasElem.height);
+        }
     });
 
-    // TODO make this condense all layers and save???
-    save.addEventListener('click', function() {  // saves image as png
+    save.addEventListener('click', function() {  // condenses all layers and saves image as png
         const link = document.createElement('a');
-        link.download = 'myImage.png'; 
-        link.href = canvasElem.toDataURL();
+        link.download = prompt("Please name your image!", "yourDrawing") + ".png"; 
+        let canvas = document.createElement("canvas");
+        canvas.width = 500;
+        canvas.height = 300;
+        let image = canvas.getContext('2d');
+        for (i=1; i <= nextLayer; i++) {
+            let can = document.getElementById("draw"+i);
+            image.drawImage(can, 0, 0);
+        }
+        link.href = canvas.toDataURL();
         link.click();
         link.delete;
     });
@@ -118,6 +129,12 @@ window.addEventListener("load", function(){ // only works when page is fully loa
         icoord.y = e.clientY - easel.offsetTop;
 
         grid.lineWidth = size.value;
+        
+        if (eraser.checked == 1) {  // 
+            grid.globalCompositeOperation = "destination-out";
+        } else {
+            grid.globalCompositeOperation = "source-over";
+        }
 
         if(document.querySelector('input[name="shape"]:checked').value == 'free'){ // only want to begin path is line is squiqly
             grid.beginPath();

@@ -18,11 +18,20 @@ window.addEventListener("load", function(){ // only works when page is fully loa
     grid1.lineCap = 'round'; 
 
     let nextLayer = 1; // initializes layer count
+    // need to keep track of what layers are being undone and redone. 
     let icoord = {x: 0, y: 0}; // initial coordinate
     let ecoord = {x: 0, y: 0}; // end coordinate
     let flag = false; // needed so nothing is drawn with mouse move if the shape isnt free line
     let flag2 = false; // needed so nothing is drawn with during/end if begin doesnt happen
     let grid = grid1; // default to grid one 
+
+    // UNDO and REDO TEST
+    const undoButton = document.getElementById("undo");
+    const redoButton = document.getElementById("redo");
+    const maxUndos = 5;
+    let undo = [];
+    let redo = [];
+    
 
     // background layer event listeners initialized
     canvasElem.addEventListener("mousedown", begin); 
@@ -33,6 +42,48 @@ window.addEventListener("load", function(){ // only works when page is fully loa
     // checkbox visibility background eventlistener initialized
     let visibility = document.getElementById("vis1");
     visibility.addEventListener("change", changeVisibility);
+
+    undoButton.addEventListener("click", function(){
+        if ( redo.length >= maxUndos || undo.length < 1){  // check if an undo can be preformed
+            alert("NO MORE UNDOS LEFT!");
+            return;
+        }
+        let replacement = undo.pop();
+        // SAVE CURRENT LAYER STATE TO REDO PILE 
+        let redoCanvas = document.createElement("canvas");
+        redoCanvas.width = 500;
+        redoCanvas.height = 300;
+        let redoGrid = redoCanvas.getContext('2d');
+        let can = document.getElementById("draw"+replacement[1]); // need to FIX LOL ARGH like do i need to change when image is loaded lol??? TODO
+        redoGrid.drawImage(can,0,0);
+        redo.push([redoCanvas, replacement[1]]);
+        // END SAVE TO REDO PILE 
+        // REPLACE LAYER WITH LAST ON UNDO PILE
+        let g = eval("grid"+replacement[1]); // this is fine?
+        g.clearRect(0,0, canvasElem.width, canvasElem.height);
+        g.drawImage(replacement[0], 0, 0);
+    });
+
+    redoButton.addEventListener("click", function(){
+        if ( undo.length >= maxUndos || redo.length < 1){  // check if an undo can be preformed
+            alert("NO MORE REDOS LEFT!");
+            return;
+        }
+        let replacement = redo.pop();
+        // SAVE CURRENT LAYER STATE TO UNDO PILE 
+        let undoCanvas = document.createElement("canvas");
+        undoCanvas.width = 500;
+        undoCanvas.height = 300;
+        let undoGrid = undoCanvas.getContext('2d');
+        let can = document.getElementById("draw"+replacement[1]); // NEED TO FIX TODO
+        undoGrid.drawImage(can,0,0);
+        undo.push([undoCanvas, replacement[1]]);
+        // END SAVE TO UNDO PILE 
+        // REPLACE LAYER WITH LAST ON UNDO PILE
+        let g = eval("grid"+replacement[1]); // this is fine?
+        g.clearRect(0,0, canvasElem.width, canvasElem.height);
+        g.drawImage(replacement[0], 0, 0);
+    });
 
     add.addEventListener("click", function(){
         nextLayer += 1; // advance count by one
@@ -94,7 +145,7 @@ window.addEventListener("load", function(){ // only works when page is fully loa
         canvas.width = 500;
         canvas.height = 300;
         let image = canvas.getContext('2d');
-        for (i=1; i <= nextLayer; i++) {
+        for (i=1; i <= nextLayer; i++) { // TODO: make sure to only add if layer is not hidden 
             let can = document.getElementById("draw"+i);
             image.drawImage(can, 0, 0);
         }
@@ -108,20 +159,30 @@ window.addEventListener("load", function(){ // only works when page is fully loa
         let visStatus = this.checked;
         let canvas = document.getElementById("draw" + layer);            
         if ( visStatus == 1 ) {
-            console.log(layer, " is checked");
             canvas.style.visibility = 'visible';
 
         } else {
-            console.log(layer, " is not checked");
             canvas.style.visibility = 'hidden';
         }
-        console.log(canvas);
     }
 
 
     function begin(e) { // mousedown
         let layer = document.querySelector('input[name="layer"]:checked').value // gets what layer user is working on
         grid = eval("grid" + layer) // sets grid to correct layer 
+
+        // SAVE CURRENT LAYER STATE TO UNDO PILE 
+        let undoCanvas = document.createElement("canvas");
+        undoCanvas.width = 500;
+        undoCanvas.height = 300;
+        let undoGrid = undoCanvas.getContext('2d');
+        let can = document.getElementById("draw"+layer);
+        undoGrid.drawImage(can,0,0);
+        if(undo.length >= maxUndos) {
+            undo = undo.slice(1);
+        }
+        undo.push([undoCanvas, layer]);
+        // END SAVE TO UNDO PILE 
 
         flag2 = true;
 
@@ -130,7 +191,7 @@ window.addEventListener("load", function(){ // only works when page is fully loa
 
         grid.lineWidth = size.value;
         
-        if (eraser.checked == 1) {  // 
+        if (eraser.checked == 1) {  // sets erasing status 
             grid.globalCompositeOperation = "destination-out";
         } else {
             grid.globalCompositeOperation = "source-over";

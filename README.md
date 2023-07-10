@@ -12,11 +12,10 @@ Added eraser and undo/redo functionality
 - Save img now allows user to name their image.
 
 **BUGS** (or *less appreciated* features...):
-- To be found...
+- If a user scrolls the line is drawn higer on the canvas. (currently investigating potential fix (07/10/2023))
 
 **TODO**: 
-- Figure out when to clear the undo and redo piles.
-- Add styling...
+- Add styling... (in progress (07/10/2023))
 
 # 06.23.2023
 Added layer functionality to canvas.

@@ -1,6 +1,22 @@
 # CanvasDraw
 A little page I made in HTML and JS that uses the canvas element combined with JS event listeners to allow people to draw on a webpage.
 
+# 06.27.2023
+Added eraser and undo/redo functionality
+
+**NEW**:
+- User can erase by clicking the eraser checkbox and drawing on the canvas where they want to erase.
+- User can undo a mark by clicking the undo button on top of the canvas. (max undos: 5)
+- User can redo a mark by clicking the redo button on top of the canvas. (max redos: 5)
+- Clear and Save buttons have been fixed.
+- Save img now allows user to name their image.
+
+**BUGS** (or *less appreciated* features...):
+- If a user scrolls the line is drawn higer on the canvas. (currently investigating potential fix (07/10/2023))
+
+**TODO**: 
+- Add styling... (in progress (07/10/2023))
+
 # 06.23.2023
 Added layer functionality to canvas.
 

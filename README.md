@@ -6,6 +6,7 @@ STYLED WEBSITE!!!!! also fixed the clear button so that the background layer isn
 
 **NEW**:
 - SUPER COOL AND FUN LAYOUT!!!
+- added *silly mode...*
 
 **BUGS** (or *less appreciated* features...):
 - *to be found...*

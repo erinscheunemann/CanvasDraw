@@ -1,0 +1,65 @@
+body {
+    font-family: 'VT323';
+    margin: auto;
+    max-width: 1000px;
+}
+
+#drawOptions {
+    margin: auto;
+    max-width: 1000px;
+    background-color: aliceblue;
+}
+
+table{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+td {
+    padding: 10px;
+    margin:0px
+}
+
+header {
+    font-family: 'Bungee Shade';
+    font-size: xx-large;
+    width: 100%;
+    padding: 5px 0px 5px 5%;
+    background-color: cornflowerblue;
+    color: crimson;
+}
+
+h3 {
+    margin: 0px;
+    padding: 0px;   
+}
+
+
+footer {
+    font: Bungee;
+    width: 100%;
+    padding: 25px 50px;
+    background-color: cornflowerblue;
+    color: crimson;
+    bottom: 0px;
+    position: static;
+}
+
+
+div.scroll {
+    margin:4px, 4px;
+    padding:4px;
+    background-color: lightsteelblue;
+    width: 150px;
+    height: 110px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    text-align:justify;
+}
+
+#silly{
+    color: red;
+    cursor: pointer;
+}
+
+

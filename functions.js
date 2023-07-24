@@ -1,3 +1,9 @@
+function Sillay() { // this just turns the webpage upside down
+    let doc = document.querySelector("head")
+    // doc.innerHTML += "<style> *{ transform: rotate(180deg) } </style>"
+    doc.innerHTML += "<style> *:not([id=\"easel\"]){ transform: rotate(180deg) } </style>"
+}
+
 window.addEventListener("load", function(){ // only works when page is fully loaded
     const canvasElem = document.getElementById("draw1"); // gets background's canvas element
     const clear = document.getElementById("clear"); // clear button
@@ -25,7 +31,7 @@ window.addEventListener("load", function(){ // only works when page is fully loa
     let flag2 = false; // needed so nothing is drawn with during/end if begin doesnt happen
     let grid = grid1; // default to grid one 
 
-    // UNDO and REDO TEST
+    // UNDO and REDO 
     const undoButton = document.getElementById("undo");
     const redoButton = document.getElementById("redo");
     const maxUndos = 5;
@@ -91,11 +97,6 @@ window.addEventListener("load", function(){ // only works when page is fully loa
         // add break 
         let br = document.createElement("br");
         layerDiv.appendChild(br);
-        // add label for new layer
-        let newLabel = document.createElement("label");
-        newLabel.for = nextLayer;
-        newLabel.innerText = "Layer " + nextLayer
-        layerDiv.appendChild(newLabel);
         // add radio button for new layer
         let newRadio = document.createElement("input");
         newRadio.type = "radio";
@@ -103,6 +104,11 @@ window.addEventListener("load", function(){ // only works when page is fully loa
         newRadio.name = "layer";
         newRadio.value = nextLayer;
         layerDiv.appendChild(newRadio);
+        // add label for new layer
+        let newLabel = document.createElement("label");
+        newLabel.for = nextLayer;
+        newLabel.innerText = "Layer " + nextLayer
+        layerDiv.appendChild(newLabel);
         // add checkbox for visibility of new layer
         let newCheck = document.createElement("input");
         newCheck.type = "checkbox"
@@ -132,7 +138,14 @@ window.addEventListener("load", function(){ // only works when page is fully loa
     });
 
     clear.addEventListener("click", function(){ // clears all layers
-        for (i=1; i <= nextLayer; i++) {
+        let grid1 = canvasElem.getContext('2d'); // creates drawable canvas
+        grid1.beginPath(); // this makes the background white and not transparent
+        grid1.rect(0, 0, canvasElem.width, canvasElem.height);
+        grid1.strokeStyle = "white";
+        grid1.fillStyle = "white";
+        grid1.fill(); 
+        grid1.stroke();
+        for (i=2; i <= nextLayer; i++) {
             let g = eval("grid"+i);
             g.clearRect(0,0, canvasElem.width, canvasElem.height);
         }
@@ -186,12 +199,12 @@ window.addEventListener("load", function(){ // only works when page is fully loa
 
         flag2 = true;
 
-        icoord.x  = e.clientX - easel.offsetLeft; // sets initial coordinates
-        icoord.y = e.clientY - easel.offsetTop;
+        icoord.x  = e.clientX - easel.offsetLeft + window.scrollX; // sets initial coordinates
+        icoord.y = e.clientY - easel.offsetTop + window.scrollY;
 
         grid.lineWidth = size.value;
         
-        if (eraser.checked == 1) {  // sets erasing status 
+        if (eraser.checked == 1 && layer != 1) {  // sets erasing status 
             grid.globalCompositeOperation = "destination-out";
         } else {
             grid.globalCompositeOperation = "source-over";
@@ -205,8 +218,8 @@ window.addEventListener("load", function(){ // only works when page is fully loa
     } 
 
     function during(e){ // mouse over
-        let x  = e.clientX - easel.offsetLeft; // gets currrent corrdinates 
-        let y = e.clientY - easel.offsetTop;
+        let x  = e.clientX - easel.offsetLeft + window.scrollX; // gets currrent corrdinates 
+        let y = e.clientY - easel.offsetTop + window.scrollY;
 
         if(flag && flag2){
             grid.lineTo(x, y); // small line from last coordinates to current coordinates (lines so small it will look squigly)
@@ -215,11 +228,14 @@ window.addEventListener("load", function(){ // only works when page is fully loa
     }
 
     function end(e){ // mouse up or mouse leave
-        ecoord.x  = e.clientX - easel.offsetLeft; // sets end coordinates
-        ecoord.y = e.clientY - easel.offsetTop;
+        ecoord.x  = e.clientX - easel.offsetLeft + window.scrollX; // sets end coordinates
+        ecoord.y = e.clientY - easel.offsetTop + window.scrollY;
 
-        grid.strokeStyle = rgb.value; // sets color of line
-        
+        if (eraser.checked == 1) { 
+            grid.strokeStyle = 'white';
+        } else {
+            grid.strokeStyle = rgb.value; // sets color of line
+        }
 
         let shape = document.querySelector('input[name="shape"]:checked').value; // gets shape to draw
 
@@ -241,7 +257,11 @@ window.addEventListener("load", function(){ // only works when page is fully loa
                 case 'frect': // filled rectangle drawn
                     grid.beginPath();
                     grid.rect(icoord.x, icoord.y, width, height);
-                    grid.fillStyle = rgb.value;
+                    if (eraser.checked == 1) { 
+                        grid.fillStyle = 'white';
+                    } else {
+                        grid.fillStyle = rgb.value; // sets color of inside of rectangle
+                    }
                     grid.fill();
                     grid.stroke();
                     break;

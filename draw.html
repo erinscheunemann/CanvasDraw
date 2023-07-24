@@ -1,51 +1,79 @@
 <!DOCTYPE html>
 <head>
     <script src="functions.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Bungee+Shade&family=Concert+One&family=Monoton&family=Rubik&family=Share+Tech+Mono&family=Space+Mono&family=VT323&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h3 id="Hdraw">Draw</h3>
-    <div id="container">
-        <div id="drawOptions">
-            <label for="color" id="colorLabel">Color:</label>
-            <input type="color" id="color" name="color"><br>
-            <p>Erase:</p>
-            <input type="checkbox" id="eraser">
-            <p>shape:</p>
-            <label for="line" class="rad">Line</label>
-            <input type="radio" id="line" name="shape" value="line" checked>
-            <br>
-            <label for="free" class="rad">Free Line</label>
-            <input type="radio" id="free" name="shape" value="free">
-            <br>
-            <label for="hrect" class="rad">Hollow Rectangle</label>
-            <input type="radio" id="hrect" name="shape" value="hrect">
-            <br>
-            <label for="frect" class="rad">Filled Rectangle</label>
-            <input type="radio" id="frect" name="shape" value="frect">
-            <br><br>
-            <div id="chooseLayer">
-                <p>Layer:</p>
-                <label for="1">Background</label>
-                <input type="radio" id="1" name="layer" value="1" checked>
-                <input type="checkbox" id="vis1" value="1" checked>
-            </div>
-            <br><br>
-            <input type="button" id="addLayer" name="addLayer" value="Add Layer">
-            <br><br>
-            <label for="size">Size:  </label>
-            <input type="number" id="size" name="size" min="1" max="10" value="5">
-            <div id="imageOptions">
-                <input type="button" id="clear" name="clear" value="clear">
-                <input type="button" id="save" name="save" value="save img">
-            </div>
-            <div id="UndoRedo">
-                <input type="button" id="undo" name="undo" value="undo">
-                <input type="button" id="redo" name="redo" value="redo">
-            </div>
-        </div>
-        <div id="easel" style="position: relative;">
-            <canvas id="draw1" width="500" height="300"
-            style="border: 1px black solid; position: absolute; top: 0px; left: 0px;"></canvas>
-        </div>        
+    <header>
+        <h3>Canvas Draw</h3>
+    </header>
+    <div id="drawOptions">
+        <table>
+            <tr>
+                <td>
+                    <p>shape:</p>
+                    <label for="line" class="rad">Line</label>
+                    <input type="radio" id="line" name="shape" value="line" checked>
+                    <br>
+                    <label for="free" class="rad">Free Line</label>
+                    <input type="radio" id="free" name="shape" value="free">
+                    <br>
+                    <label for="hrect" class="rad">Hollow Rectangle</label>
+                    <input type="radio" id="hrect" name="shape" value="hrect">
+                    <br>
+                    <label for="frect" class="rad">Filled Rectangle</label>
+                    <input type="radio" id="frect" name="shape" value="frect">
+                </td>
+                <td>
+                    <label for="color" id="colorLabel">Color:</label>
+                    <input type="color" id="color" name="color">
+                    <br><br>
+                    <label for="size">Size:  </label>
+                    <input type="number" id="size" name="size" min="1" max="10" value="5">
+                    <br><br>
+                    <label for="eraser">Erase:</label>
+                    <input type="checkbox" id="eraser">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div id="UndoRedo">
+                        <input type="button" id="undo" name="undo" value="undo">
+                        <input type="button" id="redo" name="redo" value="redo">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td id="easel" style="height: 300px; width:500px; position: relative;">
+                    <canvas id="draw1" width="500" height="300"
+                    style="border: 1px black solid; position: absolute; top: 0px; left: 0px;"></canvas>
+                </td>
+                <td>
+                    <p>Layer:</p>
+                    <div id="chooseLayer" class="scroll">
+                        <input type="radio" id="1" name="layer" value="1" checked>
+                        <label for="1">Background</label>
+                        <input type="checkbox" id="vis1" value="1" checked>
+                    </div>
+                    <br><br>
+                    <input type="button" id="addLayer" name="addLayer" value="Add Layer">
+                </td>
+            </tr>
+            <tr>
+                <td><input type="button" id="clear" name="clear" value="clear"></td>
+                <td><input type="button" id="save" name="save" value="save img"></td>
+            </tr>
+        </table>
     </div>
+    <footer>
+        <h2>About!</h2>
+        <p>Hello! Welcome to my webpage CanvasDraw! I created this page because I wanted to see if I could create a more advanced version of MSpaint in the browser using basic JavaScript and the HTML Canvas element... and I did exactly that!</p>
+        <p>The code I wrote for this webpage (and a few of my other projects) can be seen on my GitHub: <a href="https://github.com/erinscheunemann/">erinscheunemann</a></p>
+        <h1>OH! AND BEFORE YOU GO!!!</h1>
+        <p>feel free to enter <span id="silly" onclick="Sillay()"><em><u>silly mode</u></em></span></p>
+    </footer>   
 </body>
+

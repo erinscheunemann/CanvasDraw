@@ -1,6 +1,20 @@
 # CanvasDraw
 A little page I made in HTML and JS that uses the canvas element combined with JS event listeners to allow people to draw on a webpage.
 
+# 07.24.2023
+STYLED WEBSITE!!!!! also fixed the clear button so that the background layer isn't made transparent. Also fixed the issue of the marker position changing when the page is scrolled.
+
+**NEW**:
+- SUPER COOL AND FUN LAYOUT!!!
+- added *silly mode...*
+
+**BUGS** (or *less appreciated* features...):
+- *to be found...*
+
+**TODO**: 
+- Brainstorm new features.
+- continue to make the styling better...
+
 # 06.27.2023
 Added eraser and undo/redo functionality
 

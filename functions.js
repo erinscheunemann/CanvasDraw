@@ -13,6 +13,7 @@ window.addEventListener("load", function(){ // only works when page is fully loa
     const size = document.getElementById("size"); // gets size for shapes/lines
     const eraser = document.getElementById("eraser"); // gets erasing status 
     const easel = this.document.getElementById("easel"); // div with canvases 
+    const sizeOfBorder = 10;
 
     let grid1 = canvasElem.getContext('2d'); // creates drawable canvas
     grid1.beginPath(); // this makes the background white and not transparent
@@ -199,7 +200,7 @@ window.addEventListener("load", function(){ // only works when page is fully loa
 
         flag2 = true;
 
-        icoord.x  = e.clientX - easel.offsetLeft + window.scrollX; // sets initial coordinates
+        icoord.x  = e.clientX - easel.offsetLeft + window.scrollX - sizeOfBorder; // sets initial coordinates
         icoord.y = e.clientY - easel.offsetTop + window.scrollY;
 
         grid.lineWidth = size.value;
@@ -218,7 +219,7 @@ window.addEventListener("load", function(){ // only works when page is fully loa
     } 
 
     function during(e){ // mouse over
-        let x  = e.clientX - easel.offsetLeft + window.scrollX; // gets currrent corrdinates 
+        let x  = e.clientX - easel.offsetLeft + window.scrollX - sizeOfBorder; // gets currrent corrdinates 
         let y = e.clientY - easel.offsetTop + window.scrollY;
 
         if(flag && flag2){
@@ -228,7 +229,7 @@ window.addEventListener("load", function(){ // only works when page is fully loa
     }
 
     function end(e){ // mouse up or mouse leave
-        ecoord.x  = e.clientX - easel.offsetLeft + window.scrollX; // sets end coordinates
+        ecoord.x  = e.clientX - easel.offsetLeft + window.scrollX - sizeOfBorder; // sets end coordinates
         ecoord.y = e.clientY - easel.offsetTop + window.scrollY;
 
         if (eraser.checked == 1) { 

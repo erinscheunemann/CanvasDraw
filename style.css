@@ -20,7 +20,7 @@ table{
     margin-right: auto;
 }
 
-td {
+td:not(#easel) {
     padding: 10px;
     margin:0px
 }

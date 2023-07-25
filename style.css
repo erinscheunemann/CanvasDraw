@@ -1,7 +1,12 @@
 body {
     font-family: 'VT323';
+    font-size: 16pt;
     margin: auto;
     max-width: 1000px;
+    background-color: midnightblue;
+    padding: 0px 5px;
+    border-left: 10px red double;
+    border-right: 10px red double;
 }
 
 #drawOptions {
@@ -23,10 +28,10 @@ td {
 header {
     font-family: 'Bungee Shade';
     font-size: xx-large;
-    width: 100%;
+    width: auto;
     padding: 5px 0px 5px 5%;
-    background-color: cornflowerblue;
-    color: crimson;
+    background-color: dodgerblue;
+    color: darkred;
 }
 
 h3 {
@@ -37,10 +42,10 @@ h3 {
 
 footer {
     font: Bungee;
-    width: 100%;
+    width: auto;
     padding: 25px 50px;
-    background-color: cornflowerblue;
-    color: crimson;
+    background-color: dodgerblue;
+    color: darkred;
     bottom: 0px;
     position: static;
 }
@@ -50,7 +55,7 @@ div.scroll {
     margin:4px, 4px;
     padding:4px;
     background-color: lightsteelblue;
-    width: 150px;
+    width: 170px;
     height: 110px;
     overflow-x: hidden;
     overflow-y: auto;

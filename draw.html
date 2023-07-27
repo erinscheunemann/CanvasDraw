@@ -26,6 +26,9 @@
                     <br>
                     <label for="frect" class="rad">Filled Rectangle</label>
                     <input type="radio" id="frect" name="shape" value="frect">
+                    <br>
+                    <label for="erase" class="rad">Eraser</label>
+                    <input type="radio" id="erase" name="shape" value="erase">
                 </td>
                 <td>
                     <label for="color" id="colorLabel">Color:</label>
@@ -33,9 +36,6 @@
                     <br><br>
                     <label for="size">Size:  </label>
                     <input type="number" id="size" name="size" min="1" max="10" value="5">
-                    <br><br>
-                    <label for="eraser">Erase:</label>
-                    <input type="checkbox" id="eraser">
                 </td>
             </tr>
             <tr>
@@ -48,6 +48,8 @@
             </tr>
             <tr>
                 <td id="easel" style="height: 300px; width:500px; position: relative;">
+                    <canvas id="whiteground" width="500" height="300"
+                    style="border: 1px black solid; position: absolute; top: 0px; left: 0px;"></canvas>
                     <canvas id="draw1" width="500" height="300"
                     style="border: 1px black solid; position: absolute; top: 0px; left: 0px;"></canvas>
                 </td>

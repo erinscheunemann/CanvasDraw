@@ -5,23 +5,26 @@ function Sillay() { // this just turns the webpage upside down
 }
 
 window.addEventListener("load", function(){ // only works when page is fully loaded
+    const whiteground = document.getElementById("whiteground"); // gets true uneditable background's canvas element
     const canvasElem = document.getElementById("draw1"); // gets background's canvas element
     const clear = document.getElementById("clear"); // clear button
     const save = document.getElementById("save"); // save button
     const add = document.getElementById("addLayer"); // add layer button
     const rgb = document.getElementById("color"); // gets color for shapes
     const size = document.getElementById("size"); // gets size for shapes/lines
-    const eraser = document.getElementById("eraser"); // gets erasing status 
     const easel = this.document.getElementById("easel"); // div with canvases 
     const sizeOfBorder = 10;
 
+    let wg = whiteground.getContext('2d'); // creates drawable canvas
+    wg.beginPath(); // this makes the background white and not transparent
+    wg.rect(0, 0, whiteground.width, whiteground.height);
+    wg.strokeStyle = "white";
+    wg.fillStyle = "white";
+    wg.fill(); 
+    wg.stroke();
+    wg.lineCap = 'round'; 
+
     let grid1 = canvasElem.getContext('2d'); // creates drawable canvas
-    grid1.beginPath(); // this makes the background white and not transparent
-    grid1.rect(0, 0, canvasElem.width, canvasElem.height);
-    grid1.strokeStyle = "white";
-    grid1.fillStyle = "white";
-    grid1.fill(); 
-    grid1.stroke();
     grid1.lineCap = 'round'; 
 
     let nextLayer = 1; // initializes layer count
@@ -30,6 +33,10 @@ window.addEventListener("load", function(){ // only works when page is fully loa
     let ecoord = {x: 0, y: 0}; // end coordinate
     let flag = false; // needed so nothing is drawn with mouse move if the shape isnt free line
     let flag2 = false; // needed so nothing is drawn with during/end if begin doesnt happen
+    let begingingCanvas = document.createElement("canvas"); // to save begining state for clear during during
+    begingingCanvas.width = 500;
+    begingingCanvas.height = 300;
+    let begingingGrid = begingingCanvas.getContext('2d');
     let grid = grid1; // default to grid one 
 
     // UNDO and REDO 
@@ -57,18 +64,10 @@ window.addEventListener("load", function(){ // only works when page is fully loa
         }
         let replacement = undo.pop();
         // SAVE CURRENT LAYER STATE TO REDO PILE 
-        let redoCanvas = document.createElement("canvas");
-        redoCanvas.width = 500;
-        redoCanvas.height = 300;
-        let redoGrid = redoCanvas.getContext('2d');
-        let can = document.getElementById("draw"+replacement[1]); // need to FIX LOL ARGH like do i need to change when image is loaded lol??? TODO
-        redoGrid.drawImage(can,0,0);
-        redo.push([redoCanvas, replacement[1]]);
+       redo.push([saveStateToCanvas(replacement[1]), replacement[1]]);
         // END SAVE TO REDO PILE 
         // REPLACE LAYER WITH LAST ON UNDO PILE
-        let g = eval("grid"+replacement[1]); // this is fine?
-        g.clearRect(0,0, canvasElem.width, canvasElem.height);
-        g.drawImage(replacement[0], 0, 0);
+       drawOnLayer(replacement[1], replacement[0]);
     });
 
     redoButton.addEventListener("click", function(){
@@ -78,18 +77,10 @@ window.addEventListener("load", function(){ // only works when page is fully loa
         }
         let replacement = redo.pop();
         // SAVE CURRENT LAYER STATE TO UNDO PILE 
-        let undoCanvas = document.createElement("canvas");
-        undoCanvas.width = 500;
-        undoCanvas.height = 300;
-        let undoGrid = undoCanvas.getContext('2d');
-        let can = document.getElementById("draw"+replacement[1]); // NEED TO FIX TODO
-        undoGrid.drawImage(can,0,0);
-        undo.push([undoCanvas, replacement[1]]);
+        undo.push([saveStateToCanvas(replacement[1]), replacement[1]]);
         // END SAVE TO UNDO PILE 
         // REPLACE LAYER WITH LAST ON UNDO PILE
-        let g = eval("grid"+replacement[1]); // this is fine?
-        g.clearRect(0,0, canvasElem.width, canvasElem.height);
-        g.drawImage(replacement[0], 0, 0);
+        drawOnLayer(replacement[1], replacement[0]);
     });
 
     add.addEventListener("click", function(){
@@ -185,17 +176,13 @@ window.addEventListener("load", function(){ // only works when page is fully loa
         let layer = document.querySelector('input[name="layer"]:checked').value // gets what layer user is working on
         grid = eval("grid" + layer) // sets grid to correct layer 
 
-        // SAVE CURRENT LAYER STATE TO UNDO PILE 
-        let undoCanvas = document.createElement("canvas");
-        undoCanvas.width = 500;
-        undoCanvas.height = 300;
-        let undoGrid = undoCanvas.getContext('2d');
+        // SAVE CURRENT LAYER STATE TO UNDO PILE
         let can = document.getElementById("draw"+layer);
-        undoGrid.drawImage(can,0,0);
+        begingingGrid.drawImage(can,0,0); // SAVE TO BEGINING STATE
         if(undo.length >= maxUndos) {
             undo = undo.slice(1);
         }
-        undo.push([undoCanvas, layer]);
+        undo.push([saveStateToCanvas(layer), layer]);
         // END SAVE TO UNDO PILE 
 
         flag2 = true;
@@ -204,16 +191,13 @@ window.addEventListener("load", function(){ // only works when page is fully loa
         icoord.y = e.clientY - easel.offsetTop + window.scrollY;
 
         grid.lineWidth = size.value;
-        
-        if (eraser.checked == 1 && layer != 1) {  // sets erasing status 
-            grid.globalCompositeOperation = "destination-out";
-        } else {
-            grid.globalCompositeOperation = "source-over";
-        }
 
         if(document.querySelector('input[name="shape"]:checked').value == 'free'){ // only want to begin path is line is squiqly
             grid.beginPath();
             grid.moveTo(icoord.x, icoord.y); // start squigly at initial coordinate
+            flag = true;
+        } else if (document.querySelector('input[name="shape"]:checked').value == 'erase'){ // only want to begin path is line is eraser
+            grid.clearRect(icoord.x, icoord.y, size.value, size.value);
             flag = true;
         }
     } 
@@ -221,29 +205,63 @@ window.addEventListener("load", function(){ // only works when page is fully loa
     function during(e){ // mouse over
         let x  = e.clientX - easel.offsetLeft + window.scrollX - sizeOfBorder; // gets currrent corrdinates 
         let y = e.clientY - easel.offsetTop + window.scrollY;
+        if(flag2){ // move all to shape and get rid of flag2?
+            if (!flag) {
+                // clear canvas of previous during
+                let layer = document.querySelector('input[name="layer"]:checked').value 
+                drawOnLayer(layer, begingingCanvas);
+            }
 
-        if(flag && flag2){
-            grid.lineTo(x, y); // small line from last coordinates to current coordinates (lines so small it will look squigly)
-            grid.stroke();
-        } 
+            let shape = document.querySelector('input[name="shape"]:checked').value; // gets shape to draw
+
+            let width = -(icoord.x-x); // width and height for rectangles
+            let height = -(icoord.y-y);
+
+            grid.strokeStyle = rgb.value;
+
+            switch (shape) {
+                case 'line': // straight line drawn
+                    grid.beginPath();
+                    grid.moveTo(icoord.x, icoord.y);
+                    grid.lineTo(x,y);
+                    grid.stroke();
+                    break;
+                case 'hrect': // hollow rectangle drawn
+                    grid.strokeRect(icoord.x, icoord.y, width, height);
+                    break;
+                case 'frect': // filled rectangle drawn
+                    grid.beginPath();
+                    grid.rect(icoord.x, icoord.y, width, height);
+                    grid.fillStyle = rgb.value;
+                    grid.fill();
+                    grid.stroke();
+                    break;
+                case 'free':
+                    grid.lineTo(x, y); // small line from last coordinates to current coordinates (lines so small it will look squigly)
+                    grid.stroke();
+                    break;
+                case 'erase':
+                    console.log("erase :3")
+                    grid.clearRect(x,y, size.value, size.value);
+                    break;
+                default:
+                    console.log("shits fucked");
+                    break;
+            }
+        }
     }
 
     function end(e){ // mouse up or mouse leave
         ecoord.x  = e.clientX - easel.offsetLeft + window.scrollX - sizeOfBorder; // sets end coordinates
         ecoord.y = e.clientY - easel.offsetTop + window.scrollY;
 
-        if (eraser.checked == 1) { 
-            grid.strokeStyle = 'white';
-        } else {
-            grid.strokeStyle = rgb.value; // sets color of line
-        }
-
         let shape = document.querySelector('input[name="shape"]:checked').value; // gets shape to draw
 
         let width = -(icoord.x-ecoord.x); // width and height for rectangles
         let height = -(icoord.y-ecoord.y);
 
-
+        grid.strokeStyle = rgb.value;
+        
         if (flag2) {
             switch (shape) {
                 case 'line': // straight line drawn
@@ -258,11 +276,7 @@ window.addEventListener("load", function(){ // only works when page is fully loa
                 case 'frect': // filled rectangle drawn
                     grid.beginPath();
                     grid.rect(icoord.x, icoord.y, width, height);
-                    if (eraser.checked == 1) { 
-                        grid.fillStyle = 'white';
-                    } else {
-                        grid.fillStyle = rgb.value; // sets color of inside of rectangle
-                    }
+                    grid.fillStyle = rgb.value;
                     grid.fill();
                     grid.stroke();
                     break;
@@ -271,11 +285,32 @@ window.addEventListener("load", function(){ // only works when page is fully loa
                     grid.stroke();
                     flag = false;
                     break;
+                case 'erase':
+                    console.log("erase")
+                    grid.clearRect(ecoord.x, ecoord.y, size.value, size.value);
+                    break;
                 default: // technically dont need since one is always going to be checked but nice for troubleshooting
                     console.log("shape: "+shape+" was not found");
                     break;
             }
         }
         flag2 = false;
+    }
+
+    function saveStateToCanvas(layer){
+        // SAVE CURRENT LAYER STATE TO TEMP CANVAS
+        let tempCanvas = document.createElement("canvas");
+        tempCanvas.width = 500;
+        tempCanvas.height = 300;
+        let tempGrid = tempCanvas.getContext('2d');
+        let can = document.getElementById("draw"+layer); 
+        tempGrid.drawImage(can,0,0);
+        return tempCanvas
+    }
+
+    function drawOnLayer(layer, canvas){
+        let g = eval("grid"+layer);
+        g.clearRect(0,0, 500, 300);
+        g.drawImage(canvas, 0, 0);
     }
 })

@@ -67,4 +67,7 @@ div.scroll {
     cursor: pointer;
 }
 
+#easel {
+    cursor: crosshair;
+}
 

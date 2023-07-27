@@ -10,9 +10,11 @@ STYLED WEBSITE!!!!! also fixed the clear button so that the background layer isn
 - added *silly mode...*
 
 **BUGS** (or *less appreciated* features...):
-- *to be found...*
+- The eraser is being wonky...
 
 **TODO**: 
+- Add in functionality to durring so that it shows the user what the other styles look like while drawing and not just free line.
+- Add in a fill bucket.
 - Brainstorm new features.
 - continue to make the styling better...
 

@@ -2,6 +2,9 @@
 A little page I made in HTML and JS that uses the canvas element combined with JS event listeners to allow people to draw on a webpage.
 This webpage can be viewed by clicking [HERE!!!](https://erinscheunemann.github.io/CanvasDraw/draw.html)
 
+# IN PROGRESS
+Working on getting a fill bucket tool working as well as making the eraser better. 
+
 # 07.24.2023
 STYLED WEBSITE!!!!! also fixed the clear button so that the background layer isn't made transparent. Also fixed the issue of the marker position changing when the page is scrolled.
 
@@ -33,7 +36,7 @@ Added eraser and undo/redo functionality
 - If a user scrolls the line is drawn higer on the canvas. (currently investigating potential fix (07/10/2023))
 
 **TODO**: 
-- Add styling... (in progress (07/10/2023))
+- Add styling... 
 
 # 06.23.2023
 Added layer functionality to canvas.

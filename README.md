@@ -18,6 +18,7 @@ BUCKET FILL!!! implimented two ways: seed fill and simple recursion. both are sl
 **TODO**: 
 - Brainstorm new features.
 - Make bucket fill less slow.
+- Add a "fill in progress" alert so that users know that bucket fill is working.
 - Continue to make the styling better...
 
 # 07.24.2023

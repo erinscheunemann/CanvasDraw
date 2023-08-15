@@ -3,7 +3,22 @@ A little page I made in HTML and JS that uses the canvas element combined with J
 This webpage can be viewed by clicking [HERE!!!](https://erinscheunemann.github.io/CanvasDraw/draw.html)
 
 # IN PROGRESS
-Working on getting a fill bucket tool working as well as making the eraser better. 
+Working on optimizing the fill bucket tool working as well as making the eraser better. 
+
+# 08.15.2023
+BUCKET FILL!!! implimented two ways: seed fill and simple recursion. both are slow and have caused me many headaches. however I persist. 
+
+**NEW**:
+- BUCKET FILLLLLLLLLLLLLLLL LETTTSSSS GOOOOOOOOO
+
+**BUGS** (or *less appreciated* features...):
+- colors equal cant differentiate between black and white so bucket fill doesn't work on shapes that are black or white on backgrounds that are black or white......
+- bucket fill is SLOW and the "optimized" solution seedfill is just as slow ;-;
+
+**TODO**: 
+- Brainstorm new features.
+- Make bucket fill less slow.
+- Continue to make the styling better...
 
 # 07.24.2023
 STYLED WEBSITE!!!!! also fixed the clear button so that the background layer isn't made transparent. Also fixed the issue of the marker position changing when the page is scrolled.

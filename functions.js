@@ -199,6 +199,12 @@ window.addEventListener("load", function(){ // only works when page is fully loa
         } else if (document.querySelector('input[name="shape"]:checked').value == 'erase'){ // only want to begin path is line is eraser
             grid.clearRect(icoord.x, icoord.y, size.value, size.value);
             flag = true;
+        } else if (document.querySelector('input[name="shape"]:checked').value == 'fill'){ // only want to begin path is line is eraser
+            const originalColor = grid.getImageData(icoord.x,icoord.y,1,1).data;
+            var visited = Array(500*300).fill(0);
+            fillBucket(originalColor, rgb.value, grid, Math.round(icoord.x), Math.round(icoord.y), visited, 's');
+            // to use seed fill uncomment below and comment out above
+            // seedFill(grid,Math.round(icoord.x), Math.round(icoord.y), rgb.value);
         }
     } 
 
@@ -312,5 +318,106 @@ window.addEventListener("load", function(){ // only works when page is fully loa
         let g = eval("grid"+layer);
         g.clearRect(0,0, 500, 300);
         g.drawImage(canvas, 0, 0);
+    }
+
+
+    function fillBucket(ogColor, newColor, g, x, y, v, p) {
+        const img = g.getImageData(0,0,500,300);
+        const data = img.data;
+        const position = ((500*y)+x)*4;
+        if (0>x || x>500 || 0>y || y>300) { // check if on canvas
+            console.log('off base');
+            return;
+        }
+        if (data[position] != ogColor[0] || data[position+1] != ogColor[1] || data[position+2] != ogColor[2]) { // check color match
+            console.log('original: ', ogColor);
+            return;
+        }
+        if (v[(500*y)+x] == 1) { // check if visited UNEEDED BUT HERE INCASE SOMETHING GOES WRONG
+            console.log('visited');
+            return;
+        }
+        v[(500*y)+x] = 1; // set pixel to visited
+
+        data[position] = parseInt(newColor.substring(1, 3), 16); // set pixel to new color
+        data[position+1] = parseInt(newColor.substring(3, 5), 16);
+        data[position+2] = parseInt(newColor.substring(5, 7), 16);
+        data[position+3] = 255;
+        g.putImageData(img,0,0); // update canvas
+
+        if (v[(500*(y+1))+x] == 0) { // visit bottom if unvisited
+            fillBucket(ogColor,newColor, g, x, y+1, v, 'b'); // Bottom
+        }
+
+        if (v[(500*(y-1))+x] == 0) { // visit top if unvisited
+            fillBucket(ogColor,newColor, g, x, y-1, v, 'b'); // Top
+        }
+        
+        if (v[(500*y)+x+1] == 0) { // visit right if unvisited
+            fillBucket(ogColor,newColor, g, x+1, y, v, 'b'); // Right
+        }
+
+        if (v[(500*y)+x-1] == 0) { // visit left if unvisited
+            fillBucket(ogColor,newColor, g, x-1, y, v, 'b'); // Left
+        }
+    }
+
+    function seedFill(g, x, y, nc) { // just a diff method for bucket fill, should be faster but isnt
+        // get original color data 
+        const originalColor = g.getImageData(x,y,1,1).data;
+        const img = g.getImageData(0,0,500,300);
+        const data = img.data;
+
+        var seedPts = []; // stack for seed points
+        seedPts.push([x,y]);
+        while (seedPts.length != 0) {
+            
+            // go LEFT until you reach a pt that is diff from og color
+            var needSeedTop = true;
+            var needSeedBottom = true;
+            var pt = seedPts.pop();
+            var x = pt[0];
+            var y = pt[1];
+            while (colorsEqual(originalColor, g.getImageData(x,y,1,1).data)) {
+                x--;
+            }
+            // then go RIGHT and change pixels until u reach a pt that is diff from og color
+            while (colorsEqual(originalColor, g.getImageData(x,y,1,1).data)) {
+                if(needSeedTop) { // look for seedpt if needed
+                    if(colorsEqual(originalColor, g.getImageData(x,y+1,1,1).data)) {
+                        seedPts.push([x,y+1]);
+                        needSeedTop = false;
+                    } else {
+                        needSeedTop = true;
+                    }
+                }
+                if(needSeedBottom) { // look for seedpt if needed
+                    if(colorsEqual(originalColor, g.getImageData(x,y-1,1,1).data)) {
+                        seedPts.push([x,y-1]);
+                        needSeedBottom = false;
+                    } else {
+                        needSeedBottom = true;
+                    }
+                }
+                const position = ((500*y)+x)*4; // change pixel's color
+                data[position] = parseInt(nc.substring(1, 3), 16);
+                data[position+1] = parseInt(nc.substring(3, 5), 16);
+                data[position+2] = parseInt(nc.substring(5, 7), 16);
+                data[position+3] = 255;
+                g.putImageData(img,0,0); // update canvas
+
+                x++; // move right
+            }
+        }
+        
+    }
+
+
+    function colorsEqual(a, b) {
+        if (a[0] == b[0] && a[1] == b[1] && a[2] == b[2] ) {
+            return true;
+        } else {
+            return false;
+        }
     }
 })
